@@ -18,10 +18,14 @@ st.markdown("""
     .academic-title {font-family: 'Merriweather', serif; font-size: 34px !important; font-weight: 700; color: #0f172a; margin-bottom: 5px; line-height: 1.3;}
     .academic-subtitle {font-family: 'Inter', sans-serif; font-size: 16px !important; color: #475569; margin-top: 0px; margin-bottom: 25px; font-weight: 400;}
     .abstract-box {font-family: 'Inter', sans-serif; background-color: #f8fafc; padding: 20px 25px; border-left: 5px solid #3b82f6; margin-bottom: 30px; font-size: 14px; color: #334155; line-height: 1.6;}
+    .sidebar-info-box {background-color: #f1f5f9; padding: 15px; border-radius: 5px; font-size: 13px; font-family: 'Inter', sans-serif; color: #334155; margin-bottom: 15px; border: 1px solid #e2e8f0;}
     .metric-title {font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #64748b;}
     .metric-value {font-family: 'Inter', sans-serif; font-size: 38px; font-weight: 700; margin-top: -10px; margin-bottom: 0px;}
     .conclusion-text {font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600;}
     .divider {margin-top: 40px; margin-bottom: 40px; border-top: 1px solid #e2e8f0;}
+    
+    /* Ẩn bớt viền của các ô nhập liệu trong Sidebar để trông tinh tế hơn */
+    div[data-testid="stForm"] {border: none; padding: 0;}
     </style>
 """, unsafe_allow_html=True)
 
@@ -31,7 +35,7 @@ LANG = {
         "title": "Neuro-Nutritional Sleep Index (NNSI) Calculator",
         "subtitle": "An explainable AI-driven clinical decision support system using survey-weighted XGBoost",
         "abstract": "<b>Abstract:</b> The NNSI is a clinical nomogram derived from a machine learning framework trained on NHANES data. It quantifies the probability of an Adverse Sleep Phenotype based on neural micronutrient status and demographic controls. This tool is designed for research and adjunctive clinical decision-making.",
-        "sidebar_info": "**Sole Author:** Phan Minh Duc<br>**Affiliation:** Dept. of Nutrition, Faculty of Medicine, Hong Bang International University (HIU)<br>**Domain:** Nutritional Neuroscience",
+        "sidebar_info": "<b>Sole Author:</b> Phan Minh Duc<br><br><b>Affiliation:</b> Dept. of Nutrition, Faculty of Medicine, Hong Bang International University (HIU)<br><br><b>Domain:</b> Nutritional Neuroscience",
         "input_header": "📋 PATIENT PROFILING",
         "demo_header": "I. Demographics & Mental Health",
         "nutri_header": "II. Neural Micronutrients (24h Recall)",
@@ -51,7 +55,7 @@ LANG = {
         "title": "Hệ thống Đánh giá Lâm sàng: Chỉ số NNSI",
         "subtitle": "Công cụ hỗ trợ quyết định lâm sàng ứng dụng thuật toán phi tuyến tính Survey-Weighted XGBoost",
         "abstract": "<b>Tóm tắt:</b> Chỉ số NNSI (Nutritional Neuroscience Sleep Index) là một hệ thống điểm Nomogram được trích xuất thông qua kỹ thuật giải mã hộp đen SHAP. Công cụ định lượng hóa xác suất xuất hiện Kiểu hình Giấc ngủ Bất lợi dựa trên hồ sơ chuyển hóa vi chất và các biến số kiểm soát dịch tễ.",
-        "sidebar_info": "**Tác giả độc lập:** Phan Minh Đức<br>**Cơ quan:** Bộ môn Dinh dưỡng, Khoa Y - Trường Đại học Quốc tế Hồng Bàng (HIU)<br>**Chuyên ngành:** Dinh dưỡng Thần kinh",
+        "sidebar_info": "<b>Tác giả độc lập:</b> Phan Minh Đức<br><br><b>Cơ quan:</b> Bộ môn Dinh dưỡng, Khoa Y - Trường Đại học Quốc tế Hồng Bàng (HIU)<br><br><b>Chuyên ngành:</b> Dinh dưỡng Thần kinh",
         "input_header": "📋 HỒ SƠ LÂM SÀNG",
         "demo_header": "I. Nhân khẩu & Tâm lý",
         "nutri_header": "II. Vi chất Thần kinh (24h Recall)",
@@ -132,8 +136,8 @@ st.markdown(f'<div class="academic-title">{t["title"]}</div>', unsafe_allow_html
 st.markdown(f'<div class="academic-subtitle">{t["subtitle"]}</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="abstract-box">{t["abstract"]}</div>', unsafe_allow_html=True)
 
-st.sidebar.markdown(f"<div style='background-color: #f1f5f9; padding: 15px; border-radius: 5px; font-size: 13px;'>{t['sidebar_info']}</div>", unsafe_allow_html=True)
-st.sidebar.markdown("<br>", unsafe_allow_html=True)
+# Khắc phục lỗi in đậm ở Sidebar bằng HTML/CSS tích hợp
+st.sidebar.markdown(f'<div class="sidebar-info-box">{t["sidebar_info"]}</div>', unsafe_allow_html=True)
 
 st.sidebar.markdown(f"### {t['input_header']}")
 with st.sidebar.form("patient_form"):
