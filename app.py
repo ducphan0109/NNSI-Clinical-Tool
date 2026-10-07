@@ -10,7 +10,6 @@ import streamlit.components.v1 as components
 # ==========================================
 st.set_page_config(page_title="NNSI Clinical Tool", page_icon="⚕️", layout="wide")
 
-# CSS Phong cách Hàn lâm Quốc tế (Academic Journal Style)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300&family=Inter:wght@400;600&display=swap');
@@ -23,13 +22,10 @@ st.markdown("""
     .metric-value {font-family: 'Inter', sans-serif; font-size: 38px; font-weight: 700; margin-top: -10px; margin-bottom: 0px;}
     .conclusion-text {font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600;}
     .divider {margin-top: 40px; margin-bottom: 40px; border-top: 1px solid #e2e8f0;}
-    
-    /* Ẩn bớt viền của các ô nhập liệu trong Sidebar để trông tinh tế hơn */
     div[data-testid="stForm"] {border: none; padding: 0;}
     </style>
 """, unsafe_allow_html=True)
 
-# Bộ từ điển I18N (Internationalization)
 LANG = {
     "EN": {
         "title": "Neuro-Nutritional Sleep Index (NNSI) Calculator",
@@ -40,7 +36,11 @@ LANG = {
         "demo_header": "I. Demographics & Mental Health",
         "nutri_header": "II. Neural Micronutrients (24h Recall)",
         "age": "Age (Years)", "gender": "Gender", "male": "Male", "female": "Female",
-        "race": "Race/Ethnicity (NHANES Code)", "bmi": "Body Mass Index (BMI)", "pir": "Poverty Income Ratio (PIR)", "phq9": "PHQ-9 Depression Score",
+        "race": "Race/Ethnicity", "bmi": "Body Mass Index (BMI)", 
+        "pir": "Poverty Income Ratio (PIR)", 
+        "pir_help": "Ratio of family income to the poverty threshold. <1.0 means below poverty level. 5.0 means income is 5x or more above poverty level.",
+        "phq9": "PHQ-9 Depression Score",
+        "phq9_help": "Total score from 0-27. Used as a confounding control in the AI model (does not directly add to NNSI Nomogram points).",
         "caff": "Caffeine (mg/d)", "iron": "Iron (mg/d)", "magn": "Magnesium (mg/d)", "zinc": "Zinc (mg/d)",
         "vb6": "Vitamin B6 (mg/d)", "vb12": "Vitamin B12 (mcg/d)", "fola": "Folate (mcg/d)", "prot": "Protein (g/d)", "carb": "Carbohydrate (g/d)",
         "btn": "Execute Analysis & Generate Report",
@@ -49,7 +49,8 @@ LANG = {
         "prob_label": "AI PREDICTED PROBABILITY (ADVERSE SLEEP)",
         "risk_low": "Low Risk Phenotype", "risk_mod": "Moderate Risk Phenotype", "risk_high": "High Risk Phenotype",
         "shap_header": "🧠 EXPLAINABLE AI (SHAP ANALYSIS)",
-        "shap_desc": "The force plot below deconstructs the patient's specific risk profile. Red vectors indicate nutritional factors pushing toward sleep disturbance, while blue vectors represent protective factors."
+        "shap_desc": "The force plot below deconstructs the patient's specific risk profile. Red vectors indicate nutritional factors pushing toward sleep disturbance, while blue vectors represent protective factors.",
+        "race_opts": {1: "Mexican American", 2: "Other Hispanic", 3: "Non-Hispanic White", 4: "Non-Hispanic Black", 6: "Non-Hispanic Asian", 7: "Other Race / Multi-Racial"}
     },
     "VI": {
         "title": "Hệ thống Đánh giá Lâm sàng: Chỉ số NNSI",
@@ -60,7 +61,11 @@ LANG = {
         "demo_header": "I. Nhân khẩu & Tâm lý",
         "nutri_header": "II. Vi chất Thần kinh (24h Recall)",
         "age": "Tuổi (Năm)", "gender": "Giới tính", "male": "Nam giới", "female": "Nữ giới",
-        "race": "Mã Chủng tộc (NHANES)", "bmi": "Chỉ số Khối cơ thể (BMI)", "pir": "Tỷ lệ Thu nhập/Nghèo đói (PIR)", "phq9": "Thang điểm Trầm cảm (PHQ-9)",
+        "race": "Chủng tộc / Sắc tộc", "bmi": "Chỉ số Khối cơ thể (BMI)", 
+        "pir": "Tỷ lệ Thu nhập/Nghèo đói (PIR)", 
+        "pir_help": "Thang đo từ 0.0 - 5.0. Dưới 1.0 là sống dưới mức nghèo. 5.0 là thu nhập gấp 5 lần trở lên so với chuẩn nghèo.",
+        "phq9": "Thang điểm Trầm cảm (PHQ-9)",
+        "phq9_help": "Thang điểm từ 0-27. Đóng vai trò là biến kiểm soát nhiễu trong mô hình AI ngầm, không trực tiếp cộng vào Tổng điểm NNSI.",
         "caff": "Lượng Caffeine (mg/ngày)", "iron": "Sắt (mg/ngày)", "magn": "Magiê (mg/ngày)", "zinc": "Kẽm (mg/ngày)",
         "vb6": "Vitamin B6 (mg/ngày)", "vb12": "Vitamin B12 (mcg/ngày)", "fola": "Folate (mcg/ngày)", "prot": "Tổng Protein (g/ngày)", "carb": "Tổng Carbohydrate (g/ngày)",
         "btn": "Tiến hành Phân tích & Trích xuất Báo cáo",
@@ -69,11 +74,11 @@ LANG = {
         "prob_label": "XÁC SUẤT BẤT LỢI GIẤC NGỦ (AI MODEL)",
         "risk_low": "Kiểu hình Nguy cơ Thấp", "risk_mod": "Kiểu hình Nguy cơ Trung bình", "risk_high": "Kiểu hình Nguy cơ Cao",
         "shap_header": "🧠 KHAI PHÁ HỘP ĐEN (SHAP ANALYSIS)",
-        "shap_desc": "Biểu đồ lực (Force Plot) dưới đây bóc tách mức độ đóng góp của từng vi chất vào sự thay đổi xác suất nguy cơ. Vectơ màu đỏ đẩy nguy cơ lên cao (chống lại giấc ngủ), vectơ màu xanh kéo nguy cơ xuống (bảo vệ giấc ngủ)."
+        "shap_desc": "Biểu đồ lực (Force Plot) dưới đây bóc tách mức độ đóng góp của từng vi chất vào sự thay đổi xác suất nguy cơ. Vectơ màu đỏ đẩy nguy cơ lên cao (chống lại giấc ngủ), vectơ màu xanh kéo nguy cơ xuống (bảo vệ giấc ngủ).",
+        "race_opts": {1: "Người gốc Mexico", 2: "Người gốc Hispanic khác", 3: "Người Da trắng", 4: "Người Da đen", 6: "Người gốc Á", 7: "Đa chủng tộc / Khác"}
     }
 }
 
-# Chọn ngôn ngữ (Nút gạt trên cùng)
 lang_choice = st.sidebar.radio("🌐 Language / Ngôn ngữ", ["English", "Tiếng Việt"], horizontal=True)
 lang = "EN" if lang_choice == "English" else "VI"
 t = LANG[lang]
@@ -136,7 +141,6 @@ st.markdown(f'<div class="academic-title">{t["title"]}</div>', unsafe_allow_html
 st.markdown(f'<div class="academic-subtitle">{t["subtitle"]}</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="abstract-box">{t["abstract"]}</div>', unsafe_allow_html=True)
 
-# Khắc phục lỗi in đậm ở Sidebar bằng HTML/CSS tích hợp
 st.sidebar.markdown(f'<div class="sidebar-info-box">{t["sidebar_info"]}</div>', unsafe_allow_html=True)
 
 st.sidebar.markdown(f"### {t['input_header']}")
@@ -144,10 +148,15 @@ with st.sidebar.form("patient_form"):
     st.markdown(f"**{t['demo_header']}**")
     age = st.number_input(t["age"], min_value=18, max_value=80, value=30)
     gender = st.selectbox(t["gender"], options=[1, 2], format_func=lambda x: t["male"] if x==1 else t["female"])
-    race = st.selectbox(t["race"], options=[1, 2, 3, 4, 6], index=2)
+    
+    # Render biến Chủng tộc bằng chữ dễ hiểu
+    race = st.selectbox(t["race"], options=[1, 2, 3, 4, 6, 7], index=4, format_func=lambda x: t["race_opts"][x])
+    
     bmi = st.number_input(t["bmi"], min_value=10.0, max_value=80.0, value=22.5)
-    pir = st.number_input(t["pir"], min_value=0.0, max_value=5.0, value=2.0)
-    phq9 = st.slider(t["phq9"], min_value=0, max_value=27, value=0)
+    
+    # Bổ sung tooltip giải thích cho PIR và PHQ9
+    pir = st.number_input(t["pir"], min_value=0.0, max_value=5.0, value=2.0, help=t["pir_help"])
+    phq9 = st.slider(t["phq9"], min_value=0, max_value=27, value=0, help=t["phq9_help"])
     
     st.markdown(f"**{t['nutri_header']}**")
     caff = st.number_input(t["caff"], min_value=0.0, value=150.0)
