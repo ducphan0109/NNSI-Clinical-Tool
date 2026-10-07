@@ -3,3 +3,5 @@ pandas
 xgboost
 shap
 scikit-learn
+matplotlib
+ipython
