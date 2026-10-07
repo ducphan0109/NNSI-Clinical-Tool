@@ -143,4 +143,47 @@ with st.sidebar.form("patient_form"):
     race = st.selectbox(t["race"], options=[1, 2, 3, 4, 6], index=2)
     bmi = st.number_input(t["bmi"], min_value=10.0, max_value=80.0, value=22.5)
     pir = st.number_input(t["pir"], min_value=0.0, max_value=5.0, value=2.0)
-    phq9 = st.slider(t["phq9"], min_value=0, max_
+    phq9 = st.slider(t["phq9"], min_value=0, max_value=27, value=0)
+    
+    st.markdown(f"**{t['nutri_header']}**")
+    caff = st.number_input(t["caff"], min_value=0.0, value=150.0)
+    iron = st.number_input(t["iron"], min_value=0.0, value=12.0)
+    magn = st.number_input(t["magn"], min_value=0.0, value=250.0)
+    zinc = st.number_input(t["zinc"], min_value=0.0, value=20.0)
+    vb6 = st.number_input(t["vb6"], min_value=0.0, value=1.5)
+    vb12 = st.number_input(t["vb12"], min_value=0.0, value=2.4)
+    fola = st.number_input(t["fola"], min_value=0.0, value=400.0)
+    prot = st.number_input(t["prot"], min_value=0.0, value=70.0)
+    carb = st.number_input(t["carb"], min_value=0.0, value=250.0)
+    
+    submitted = st.form_submit_button(t["btn"])
+
+if submitted:
+    input_data = {'RIDAGEYR': age, 'RIAGENDR': gender, 'RIDRETH3': race, 'BMXBMI': bmi, 'INDFMPIR': pir, 'PHQ9_Score': phq9, 'DR1TCAFF': caff, 'DR1TIRON': iron, 'DR1TMAGN': magn, 'DR1TZINC': zinc, 'DR1TVB6': vb6, 'DR1TVB12': vb12, 'DR1TFOLA': fola, 'DR1TPROT': prot, 'DR1TCARB': carb}
+    df_patient = pd.DataFrame([input_data])
+    df_patient['Carb_Pro_Ratio'] = df_patient['DR1TCARB'] / df_patient['DR1TPROT']
+    
+    df_patient['RIAGENDR'] = pd.Categorical(df_patient['RIAGENDR'], categories=[1, 2])
+    df_patient['RIDRETH3'] = pd.Categorical(df_patient['RIDRETH3'], categories=[1, 2, 3, 4, 6])
+    df_patient = pd.get_dummies(df_patient, columns=['RIAGENDR', 'RIDRETH3'], drop_first=True, dtype=int)
+    
+    df_model_ready = df_patient.reindex(columns=training_cols, fill_value=0)
+    prob_risk = model.predict_proba(df_model_ready)[0][1] * 100
+    nnsi_score, risk_cat, color = calculate_nnsi(df_model_ready)
+    
+    st.markdown(f"### {t['res_header']}")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(f'<div class="metric-title">{t["score_label"]}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-value" style="color:{color};">{nnsi_score} / 91</div>', unsafe_allow_html=True)
+        st.markdown(f"<div class='conclusion-text' style='color:{color};'>{risk_cat}</div>", unsafe_allow_html=True)
+    with col2:
+        st.markdown(f'<div class="metric-title">{t["prob_label"]}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-value" style="color:#0f172a;">{prob_risk:.1f}%</div>', unsafe_allow_html=True)
+        
+    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+    
+    st.markdown(f"### {t['shap_header']}")
+    st.caption(t["shap_desc"])
+    shap_vals_patient = explainer.shap_values(df_model_ready)
+    st_shap(shap.force_plot(explainer.expected_value, shap_vals_patient[0], df_model_ready.iloc[0], matplotlib=False), height=150)
