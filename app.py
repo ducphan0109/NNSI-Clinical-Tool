@@ -32,16 +32,16 @@ except FileNotFoundError:
 
 # 2. HỆ THỐNG ĐIỂM NNSI
 NNSI_RULES = {
-    'DR1TCAFF': {'cutoff': 317.00, 'dir': '>=', 'points': 37},
-    'DR1TVB6': {'cutoff': 1.18, 'dir': '<', 'points': 17},
-    'DR1TZINC': {'cutoff': 10.82, 'dir': '>=', 'points': 8},
-    'DR1TMAGN': {'cutoff': 290.97, 'dir': '<', 'points': 7},
-    'DR1TFOLA': {'cutoff': 339.50, 'dir': '<', 'points': 7},
-    'Carb_Pro_Ratio': {'cutoff': 3.67, 'dir': '<', 'points': 5},
-    'DR1TPROT': {'cutoff': 94.31, 'dir': '<', 'points': 4},
-    'DR1TIRON': {'cutoff': 15.69, 'dir': '<', 'points': 3},
-    'DR1TCARB': {'cutoff': 280.27, 'dir': '<', 'points': 2},
-    'DR1TVB12': {'cutoff': 1.00, 'dir': '>=', 'points': 1}
+'DR1TCAFF': {'cutoff': 317.00, 'dir': '>=', 'points': 37},  # Caffeine: Dư thừa (>=) gây kích thích thần kinh trung ương, cản trở giấc ngủ sóng chậm.
+    'DR1TVB6': {'cutoff': 1.18, 'dir': '<', 'points': 17},      # Vitamin B6: Thiếu (<) làm giảm quá trình chuyển hoá Tryptophan thành Serotonin và Melatonin.
+    'DR1TZINC': {'cutoff': 10.82, 'dir': '<', 'points': 8},     # Kẽm: Thiếu (<) suy giảm chất lượng giấc ngủ do Kẽm là đồng yếu tố tổng hợp Melatonin.
+    'DR1TMAGN': {'cutoff': 290.97, 'dir': '<', 'points': 7},    # Magnesium: Thiếu (<) làm giảm hoạt động của thụ thể ức chế GABA, gây khó thư giãn.
+    'DR1TFOLA': {'cutoff': 339.50, 'dir': '<', 'points': 7},    # Folate: Thiếu (<) ảnh hưởng hệ thần kinh và quá trình tổng hợp monoamine.
+    'Carb_Pro_Ratio': {'cutoff': 3.67, 'dir': '>=', 'points': 5},# Tỷ lệ Carb/Đạm: Quá cao (>=) phản ánh chế độ ăn siêu chế biến, dư đường/thiếu đạm gây biến thiên đường huyết về đêm.
+    'DR1TPROT': {'cutoff': 94.31, 'dir': '<', 'points': 4},     # Protein: Thiếu (<) dẫn đến hụt nguồn cung cấp axit amin thiết yếu (Tryptophan).
+    'DR1TIRON': {'cutoff': 15.69, 'dir': '<', 'points': 3},     # Sắt: Thiếu (<) là cơ chế bệnh sinh trực tiếp gây suy giảm Dopamine, dẫn đến Hội chứng chân không yên (Restless Legs Syndrome) phá vỡ giấc ngủ.
+    'DR1TCARB': {'cutoff': 280.27, 'dir': '<', 'points': 2},    # Carbohydrate: Thiếu (<) quá mức làm giảm lượng Insulin, cản trở Tryptophan vượt qua hàng rào máu não (BBB).
+    'DR1TVB12': {'cutoff': 1.00, 'dir': '<', 'points': 1}       # Vitamin B12: Thiếu (<) liên quan đến rối loạn nhịp sinh học và thoái hoá myelin.
 }
 
 def calculate_nnsi(patient_df):
