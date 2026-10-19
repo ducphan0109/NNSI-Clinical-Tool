@@ -1,7 +1,6 @@
 streamlit
 pandas
+scikit-learn
 xgboost
 shap
-scikit-learn
-matplotlib
-ipython
+joblib
