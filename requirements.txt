@@ -7,12 +7,3 @@ shap
 joblib
 matplotlib
 numba
-
-langchain
-langchain-experimental
-openai
-pandas
-streamlit
-xgboost
-shap
-joblib
